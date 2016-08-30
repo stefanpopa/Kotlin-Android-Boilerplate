@@ -1,11 +1,10 @@
 package io.github.plastix.kotlinboilerplate.ui.base.rx.delivery
 
+import io.reactivex.Observable
+import io.reactivex.observers.TestObserver
+import io.reactivex.schedulers.TestScheduler
 import org.junit.Before
 import org.junit.Test
-import rx.Observable
-import rx.observers.TestSubscriber
-import rx.schedulers.Schedulers
-import rx.schedulers.TestScheduler
 import java.util.concurrent.TimeUnit
 
 class DeliverFirstTest {
@@ -15,12 +14,12 @@ class DeliverFirstTest {
     }
 
     lateinit var testScheduler: TestScheduler
-    lateinit var testSubscriber: TestSubscriber<Int>
+    lateinit var testSubscriber: TestObserver<Int>
 
     @Before
     fun setUp() {
-        testScheduler = Schedulers.test()
-        testSubscriber = TestSubscriber.create()
+        testScheduler = TestScheduler()
+        testSubscriber = TestObserver.create()
     }
 
     @Test
@@ -34,7 +33,7 @@ class DeliverFirstTest {
 
         testSubscriber.awaitTerminalEvent()
         testSubscriber.assertValue(0)
-        testSubscriber.assertCompleted()
+        testSubscriber.assertComplete()
     }
 
     @Test
@@ -48,7 +47,7 @@ class DeliverFirstTest {
 
         testSubscriber.awaitTerminalEvent()
         testSubscriber.assertValues(0)
-        testSubscriber.assertCompleted()
+        testSubscriber.assertComplete()
     }
 
     @Test
@@ -62,7 +61,7 @@ class DeliverFirstTest {
 
         testSubscriber.awaitTerminalEvent()
         testSubscriber.assertValues(0)
-        testSubscriber.assertCompleted()
+        testSubscriber.assertComplete()
     }
 
     @Test
@@ -74,7 +73,7 @@ class DeliverFirstTest {
                 .compose(transformer)
                 .subscribe(testSubscriber)
 
-        testSubscriber.assertNotCompleted()
+        testSubscriber.assertNotComplete()
         testSubscriber.assertNoValues()
     }
 
@@ -87,7 +86,7 @@ class DeliverFirstTest {
                 .compose(transformer)
                 .subscribe(testSubscriber)
 
-        testSubscriber.assertNotCompleted()
+        testSubscriber.assertNotComplete()
         testSubscriber.assertNoValues()
     }
 
@@ -100,7 +99,7 @@ class DeliverFirstTest {
                 .compose(transformer)
                 .subscribe(testSubscriber)
 
-        testSubscriber.assertNotCompleted()
+        testSubscriber.assertNotComplete()
         testSubscriber.assertNoValues()
     }
 
@@ -113,7 +112,7 @@ class DeliverFirstTest {
                 .compose(transformer)
                 .subscribe(testSubscriber)
 
-        testSubscriber.assertNotCompleted()
+        testSubscriber.assertNotComplete()
         testSubscriber.assertNoValues()
     }
 
@@ -126,7 +125,7 @@ class DeliverFirstTest {
                 .compose(transformer)
                 .subscribe(testSubscriber)
 
-        testSubscriber.assertNotCompleted()
+        testSubscriber.assertNotComplete()
         testSubscriber.assertNoValues()
     }
 
@@ -139,7 +138,7 @@ class DeliverFirstTest {
                 .compose(transformer)
                 .subscribe(testSubscriber)
 
-        testSubscriber.assertNotCompleted()
+        testSubscriber.assertNotComplete()
         testSubscriber.assertNoValues()
     }
 
@@ -155,11 +154,11 @@ class DeliverFirstTest {
                 .subscribe(testSubscriber)
 
         testSubscriber.assertNoValues()
-        testSubscriber.assertNotCompleted()
+        testSubscriber.assertNotComplete()
         testScheduler.advanceTimeBy(TIME_DELAY_MS, TimeUnit.MILLISECONDS)
         testSubscriber.awaitTerminalEvent()
         testSubscriber.assertValue(0)
-        testSubscriber.assertCompleted()
+        testSubscriber.assertComplete()
     }
 
     @Test
@@ -174,11 +173,11 @@ class DeliverFirstTest {
                 .subscribe(testSubscriber)
 
         testSubscriber.assertNoValues()
-        testSubscriber.assertNotCompleted()
+        testSubscriber.assertNotComplete()
         testScheduler.advanceTimeBy(TIME_DELAY_MS, TimeUnit.MILLISECONDS)
         testSubscriber.awaitTerminalEvent()
         testSubscriber.assertValue(0)
-        testSubscriber.assertCompleted()
+        testSubscriber.assertComplete()
     }
 
     @Test
@@ -193,11 +192,11 @@ class DeliverFirstTest {
                 .subscribe(testSubscriber)
 
         testSubscriber.assertNoValues()
-        testSubscriber.assertNotCompleted()
+        testSubscriber.assertNotComplete()
         testScheduler.advanceTimeBy(TIME_DELAY_MS, TimeUnit.MILLISECONDS)
         testSubscriber.awaitTerminalEvent()
         testSubscriber.assertValue(0)
-        testSubscriber.assertCompleted()
+        testSubscriber.assertComplete()
     }
 
     @Test
@@ -324,7 +323,7 @@ class DeliverFirstTest {
 
         testSubscriber.awaitTerminalEvent()
         testSubscriber.assertNoValues()
-        testSubscriber.assertCompleted()
+        testSubscriber.assertComplete()
     }
 
     @Test
@@ -336,7 +335,7 @@ class DeliverFirstTest {
                 .compose(transformer)
                 .subscribe(testSubscriber)
 
-        testSubscriber.assertNotCompleted()
+        testSubscriber.assertNotComplete()
         testSubscriber.assertNoValues()
     }
 
@@ -351,9 +350,9 @@ class DeliverFirstTest {
                 .subscribeOn(testScheduler)
                 .subscribe(testSubscriber)
 
-        testSubscriber.assertNotCompleted()
+        testSubscriber.assertNotComplete()
         testScheduler.advanceTimeBy(TIME_DELAY_MS, TimeUnit.MILLISECONDS)
         testSubscriber.awaitTerminalEvent()
-        testSubscriber.assertCompleted()
+        testSubscriber.assertComplete()
     }
 }

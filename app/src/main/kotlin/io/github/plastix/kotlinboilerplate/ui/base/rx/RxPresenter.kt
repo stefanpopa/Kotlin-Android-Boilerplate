@@ -6,15 +6,14 @@ import io.github.plastix.kotlinboilerplate.ui.base.MvpView
 import io.github.plastix.kotlinboilerplate.ui.base.rx.delivery.DeliverFirst
 import io.github.plastix.kotlinboilerplate.ui.base.rx.delivery.DeliverLatest
 import io.github.plastix.kotlinboilerplate.ui.base.rx.delivery.DeliverReplay
-import rx.Observable
-import rx.Subscription
-import rx.lang.kotlin.plusAssign
-import rx.subjects.BehaviorSubject
-import rx.subscriptions.CompositeSubscription
+import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
+import io.reactivex.subjects.BehaviorSubject
 
 abstract class RxPresenter<V : MvpView> : AbstractPresenter<V>() {
 
-    protected val subscriptions: CompositeSubscription = CompositeSubscription()
+    protected val disposables: CompositeDisposable = CompositeDisposable()
     private val viewState: BehaviorSubject<Boolean> = BehaviorSubject.create()
 
     init {
@@ -36,23 +35,23 @@ abstract class RxPresenter<V : MvpView> : AbstractPresenter<V>() {
     @CallSuper
     override fun onDestroy() {
         super.onDestroy()
-        viewState.onCompleted()
+        viewState.onComplete()
         clearSubscriptions()
     }
 
     private fun clearSubscriptions() {
-        subscriptions.clear()
+        disposables.clear()
     }
 
-    fun addSubscription(subscription: Subscription) {
-        subscriptions += subscription
+    fun addDisposable(disposable: Disposable) {
+        disposables.add(disposable)
     }
 
     /**
      * Returns an Observable which omits the current state of the view. This observable emits
      * true when the view is attached and false when it is detached.
      */
-    fun getViewState(): Observable<Boolean> = viewState.asObservable()
+    fun getViewState(): Observable<Boolean> = viewState.hide()
 
 
     /**

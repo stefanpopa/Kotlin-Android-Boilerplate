@@ -1,7 +1,10 @@
 package io.github.plastix.kotlinboilerplate.ui.base.rx.delivery
 
-import rx.Observable
-import rx.lang.kotlin.filterNotNull
+import io.reactivex.Notification
+import io.reactivex.Observable
+import io.reactivex.ObservableSource
+import io.reactivex.ObservableTransformer
+import io.reactivex.functions.BiFunction
 
 /**
  * {@link rx.Observable.Transformer} that couples data and view status
@@ -21,31 +24,26 @@ import rx.lang.kotlin.filterNotNull
  *
  * Adapted from https://github.com/alapshin/arctor (MIT License)
  */
-class DeliverLatest<T>(private val view: Observable<Boolean>) : Observable.Transformer<T, T> {
+class DeliverLatest<T>(private val view: Observable<Boolean>) : ObservableTransformer<T, T> {
 
-    override fun call(observable: Observable<T>): Observable<T> {
+    override fun apply(observable: Observable<T>): ObservableSource<T> {
         return Observable.combineLatest(
                 view,
                 // Materialize data Observable to handle onError and onCompleted events when view is detached
                 observable.materialize()
                         .delay { notification ->
                             // Delay completed notifications until the view reattaches
-                            if (notification.isOnCompleted) {
-                                view.first { it }
+                            if (notification.isOnComplete) {
+                                view.filter { it }.first()
                             } else {
                                 // Pass all other events downstream immediately
                                 // They will be "cached" by combineLatest
                                 Observable.empty()
                             }
-                        }
-        ) {
-            // Pass notification downstream if view is attached, otherwise null
-            isViewAttached, notification ->
-            if (isViewAttached) notification else null
-        }
-                //  Filter out null events to ensure we only emit when the view is attached
-                .filterNotNull()
-                // Convert our notifications back into values
+                        },
+                BiFunction<Boolean, Notification<T>, Any> { isViewAttached, notification -> if (isViewAttached) notification else Unit }
+        )
+                .filter { it != Unit }
                 .dematerialize()
     }
 }

@@ -10,13 +10,13 @@ import io.github.plastix.kotlinboilerplate.data.remote.model.Owner
 import io.github.plastix.kotlinboilerplate.data.remote.model.Repo
 import io.github.plastix.kotlinboilerplate.data.remote.model.SearchResponse
 import io.github.plastix.kotlinboilerplate.util.RxSchedulersOverrideRule
+import io.reactivex.Completable
+import io.reactivex.Single
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
-import rx.Completable
-import rx.Single
 
 class ListPresenterTest {
 
