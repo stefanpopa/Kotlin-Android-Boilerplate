@@ -6,7 +6,6 @@ import io.reactivex.disposables.Disposables
 import io.reactivex.observers.TestObserver
 import org.junit.Assert
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Test
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
@@ -56,7 +55,6 @@ class RxPresenterTest {
         sub.assertValues(false, false)
     }
 
-    @Ignore("NPE Error in CompositeDisposable with RxJava 2-RC1")
     @Test
     fun addSubscriptionUpdatesCompositeSubscription() {
         Assert.assertTrue(presenter.getSubcriptions().size() == 0)
@@ -64,7 +62,6 @@ class RxPresenterTest {
         Assert.assertTrue(presenter.getSubcriptions().size() == 1)
     }
 
-    @Ignore("NPE Error in CompositeDisposable with RxJava 2-RC1")
     @Test
     fun onDestroyClearsSubscriptionsAndUpdatesView() {
         presenter.getViewState().subscribe(sub)

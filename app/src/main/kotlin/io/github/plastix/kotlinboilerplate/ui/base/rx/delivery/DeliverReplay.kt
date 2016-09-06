@@ -30,7 +30,7 @@ class DeliverReplay<T>(private val view: Observable<Boolean>) : ObservableTransf
         return view.switchMap {
             flag ->
             if (flag) subject else Observable.never<T>()
-        }.doOnCancel {
+        }.doOnDispose {
             observer.dispose()
         }.doOnSubscribe {
             observable.subscribe(observer)
