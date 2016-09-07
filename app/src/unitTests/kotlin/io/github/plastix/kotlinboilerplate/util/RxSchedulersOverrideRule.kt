@@ -1,6 +1,8 @@
 package io.github.plastix.kotlinboilerplate.util
 
+import io.reactivex.Scheduler
 import io.reactivex.android.plugins.RxAndroidPlugins
+import io.reactivex.functions.Function
 import io.reactivex.plugins.RxJavaPlugins
 import io.reactivex.schedulers.TestScheduler
 import org.junit.rules.TestRule
@@ -19,16 +21,19 @@ import org.junit.runners.model.Statement
  */
 class RxSchedulersOverrideRule : TestRule {
 
+    var testSchedulerHandler = Function<Scheduler, Scheduler> { TestScheduler() }
+
     override fun apply(base: Statement, description: Description): Statement {
         return object : Statement() {
             override fun evaluate() {
                 RxAndroidPlugins.reset()
-                RxAndroidPlugins.setInitMainThreadSchedulerHandler { TestScheduler() }
+                RxAndroidPlugins.setMainThreadSchedulerHandler(testSchedulerHandler)
 
                 RxJavaPlugins.reset()
-                RxJavaPlugins.setIoSchedulerHandler { TestScheduler() }
-                RxJavaPlugins.setComputationSchedulerHandler { TestScheduler() }
-                RxJavaPlugins.setNewThreadSchedulerHandler { TestScheduler() }
+                RxJavaPlugins.setIoSchedulerHandler(testSchedulerHandler)
+                RxJavaPlugins.setComputationSchedulerHandler(testSchedulerHandler)
+                RxJavaPlugins.setNewThreadSchedulerHandler(testSchedulerHandler)
+                RxJavaPlugins.setSingleSchedulerHandler(testSchedulerHandler)
 
                 base.evaluate()
 
